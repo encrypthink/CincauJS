@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+    id                  String      @id @default(uuid())
+    fullname            String
+    email               String      @unique
+    phone               String      @unique
+    birthday            DateTime
+    role                Role?
+    password            String
+    created_at          DateTime    @default(now())
+    updated_at          DateTime    @updatedAt
+    employe             employee?
+    user_merchant       users_of_merchant?
+}
+
+model merchant {
+    id                  String      @id @default(uuid())
+    name                String
+    users_of_merchant   users_of_merchant[]
+    created_at          DateTime    @default(now())
+    updated_at          DateTime    @updatedAt
+}
+
+model employee {
+    nik                 String      @unique
+    title               String
+    unit                String
+    department          String
+    user                users       @relation(fields: [user_id], references: [id])
+    user_id             String      @unique
+    created_at          DateTime    @default(now())
+    updated_at          DateTime    @updatedAt
+}
+
+model users_of_merchant {
+    id                  String      @id @default(uuid())
+    user                users       @relation(fields: [user_id], references: [id])
+    user_id             String      @unique
+    merchant            merchant    @relation(fields: [merchant_id], references: [id])
+    merchant_id         String
+}
+
+enum Role {
+    CUSTOMERS
+    EMPLOYEE
+    MERCHANT
+    ADMIN
+    BOD
+}
