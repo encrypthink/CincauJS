@@ -10,4 +10,6 @@ export class BaseController {
     public async about(req: Request, res: Response) {
         res.json("add");
     }
+
+    
 }
